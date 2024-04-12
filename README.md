@@ -1,4 +1,6 @@
 # CodableKit
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FNikSativa%2FCodableKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/NikSativa/CodableKit)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FNikSativa%2FCodableKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/NikSativa/CodableKit)
 
 Swift library that provides additional features for Codable. CodableKit is useful when you need to decode data from the server, but you are not sure that the data will be correct.
 
