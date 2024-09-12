@@ -2,7 +2,7 @@ import CodableKit
 import Foundation
 import XCTest
 
-final class OptionalCodableTests: XCTestCase {
+final class LossyValueTests: XCTestCase {
     enum Payment: String, Codable, Equatable {
         case newCard = "NewCard"
         case applePay = "ApplePay"
@@ -11,7 +11,7 @@ final class OptionalCodableTests: XCTestCase {
     private struct WrappedUser: Codable, Equatable {
         let name: String
 
-        @OptionalCodable
+        @LossyValue
         var payment: Payment?
     }
 

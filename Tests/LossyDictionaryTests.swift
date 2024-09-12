@@ -2,7 +2,7 @@ import CodableKit
 import Foundation
 import XCTest
 
-final class PartialArrayTests: XCTestCase {
+final class LossyDictionaryTests: XCTestCase {
     private struct User: Decodable, Equatable {
         enum Payment: String, Decodable, Equatable {
             case newCard = "NewCard"
@@ -11,19 +11,18 @@ final class PartialArrayTests: XCTestCase {
 
         let name: String
 
-        @PartialArray
-        var payments: [Payment]
+        @LossyDictionary
+        var payments: [String: Payment]
     }
 
     func test_when_decoding_invalid_data() {
         let subject: User? = subjectAction([
             "name": "bob",
             "payments": [
-                "1": "NewCard",
-                "2": "ApplePay"
+                "NewCard", "ApplePay"
             ]
         ])
-        let expectedUser = User(name: "bob", payments: [])
+        let expectedUser = User(name: "bob", payments: [:])
         XCTAssertEqual(subject, expectedUser)
     }
 
@@ -31,11 +30,11 @@ final class PartialArrayTests: XCTestCase {
         let subject: User? = subjectAction([
             "name": "bob",
             "payments": [
-                "NewCard",
-                "ApplePay"
+                "1": "NewCard",
+                "2": "ApplePay"
             ]
         ])
-        let expectedUser = User(name: "bob", payments: [.newCard, .applePay])
+        let expectedUser = User(name: "bob", payments: ["1": .newCard, "2": .applePay])
         XCTAssertEqual(subject, expectedUser)
     }
 
@@ -43,10 +42,11 @@ final class PartialArrayTests: XCTestCase {
         let subject: User? = subjectAction([
             "name": "bob",
             "payments": [
-                "NewCard", "GooglePay"
+                "1": "NewCard",
+                "2": "GooglePay"
             ]
         ])
-        let expectedUser = User(name: "bob", payments: [.newCard])
+        let expectedUser = User(name: "bob", payments: ["1": .newCard])
         XCTAssertEqual(subject, expectedUser)
     }
 
@@ -54,21 +54,22 @@ final class PartialArrayTests: XCTestCase {
         let subject: User? = subjectAction([
             "name": "bob",
             "payments": [
-                "PayPal", "GooglePay"
+                "1": "PayPal",
+                "2": "GooglePay"
             ]
         ])
-        let expectedUser = User(name: "bob", payments: [])
+        let expectedUser = User(name: "bob", payments: [:])
         XCTAssertEqual(subject, expectedUser)
     }
 
     func test_when_decoding_data_where_no_payments_field() {
         let subject: User? = subjectAction([
-            // payment field is required
             "name": "bob",
+            // payment field is required
             "other name of field": [
-                "PayPal",
-                "GooglePay",
-                "NewCard"
+                "1": "PayPal",
+                "2": "GooglePay",
+                "3": "NewCard"
             ]
         ])
         XCTAssertNil(subject)

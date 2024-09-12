@@ -2,7 +2,7 @@ import CodableKit
 import Foundation
 import XCTest
 
-final class OptionalDecodableDictionaryTests: XCTestCase {
+final class LossyArrayTests: XCTestCase {
     private struct User: Decodable, Equatable {
         enum Payment: String, Decodable, Equatable {
             case newCard = "NewCard"
@@ -11,22 +11,11 @@ final class OptionalDecodableDictionaryTests: XCTestCase {
 
         let name: String
 
-        @PartialDictionary
-        var payments: [String: Payment]
+        @LossyArray
+        var payments: [Payment]
     }
 
     func test_when_decoding_invalid_data() {
-        let subject: User? = subjectAction([
-            "name": "bob",
-            "payments": [
-                "NewCard", "ApplePay"
-            ]
-        ])
-        let expectedUser = User(name: "bob", payments: [:])
-        XCTAssertEqual(subject, expectedUser)
-    }
-
-    func test_when_decoding_valid_data() {
         let subject: User? = subjectAction([
             "name": "bob",
             "payments": [
@@ -34,7 +23,19 @@ final class OptionalDecodableDictionaryTests: XCTestCase {
                 "2": "ApplePay"
             ]
         ])
-        let expectedUser = User(name: "bob", payments: ["1": .newCard, "2": .applePay])
+        let expectedUser = User(name: "bob", payments: [])
+        XCTAssertEqual(subject, expectedUser)
+    }
+
+    func test_when_decoding_valid_data() {
+        let subject: User? = subjectAction([
+            "name": "bob",
+            "payments": [
+                "NewCard",
+                "ApplePay"
+            ]
+        ])
+        let expectedUser = User(name: "bob", payments: [.newCard, .applePay])
         XCTAssertEqual(subject, expectedUser)
     }
 
@@ -42,11 +43,10 @@ final class OptionalDecodableDictionaryTests: XCTestCase {
         let subject: User? = subjectAction([
             "name": "bob",
             "payments": [
-                "1": "NewCard",
-                "2": "GooglePay"
+                "NewCard", "GooglePay"
             ]
         ])
-        let expectedUser = User(name: "bob", payments: ["1": .newCard])
+        let expectedUser = User(name: "bob", payments: [.newCard])
         XCTAssertEqual(subject, expectedUser)
     }
 
@@ -54,22 +54,21 @@ final class OptionalDecodableDictionaryTests: XCTestCase {
         let subject: User? = subjectAction([
             "name": "bob",
             "payments": [
-                "1": "PayPal",
-                "2": "GooglePay"
+                "PayPal", "GooglePay"
             ]
         ])
-        let expectedUser = User(name: "bob", payments: [:])
+        let expectedUser = User(name: "bob", payments: [])
         XCTAssertEqual(subject, expectedUser)
     }
 
     func test_when_decoding_data_where_no_payments_field() {
         let subject: User? = subjectAction([
-            "name": "bob",
             // payment field is required
+            "name": "bob",
             "other name of field": [
-                "1": "PayPal",
-                "2": "GooglePay",
-                "3": "NewCard"
+                "PayPal",
+                "GooglePay",
+                "NewCard"
             ]
         ])
         XCTAssertNil(subject)

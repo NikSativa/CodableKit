@@ -4,7 +4,7 @@
 
 Swift library that provides additional features for Codable. CodableKit is useful when you need to decode data from the server, but you are not sure that the data will be correct.
 
-## OptionalCodable
+## LossyValue
 Allows you to decode fields with a partially incorrect format or incorrect value. If the field is incorrect, the value will be nil. 
 
 ```swift
@@ -16,8 +16,8 @@ enum Payment: String, Codable, Equatable {
 private struct WrappedUser: Codable, Equatable {
     let name: String
 
-    @OptionalCodable
-    var payment: Payment? <<-------------- OptionalCodable behavior
+    @LossyValue
+    var payment: Payment? <<-------------- LossyValue behavior
 }
 
 private struct SDKUser: Codable, Equatable {
@@ -45,7 +45,7 @@ func test_when_decoding_data_is_invalid() {
         "payment": "GooglePay"
     ]
     let wrappedUser: WrappedUser? = subjectAction(json)
-    let expectedUser = WrappedUser(name: "bob", payment: nil) <<-------------- OptionalCodable behavior
+    let expectedUser = WrappedUser(name: "bob", payment: nil) <<-------------- LossyValue behavior
     XCTAssertEqual(wrappedUser, expectedUser)
 
     let sdkUser: SDKUser? = subjectAction(json) <<-------------- SDK behavior
@@ -58,7 +58,7 @@ func test_when_decoding_data_is_lack() {
         // payment field is required
         "other name of field": "NewCard"
     ]
-    let wrappedUser: WrappedUser? = subjectAction(json) <<-------------- OptionalCodable behavior
+    let wrappedUser: WrappedUser? = subjectAction(json) <<-------------- LossyValue behavior
     XCTAssertNil(wrappedUser)
 
     let sdkUser: SDKUser? = subjectAction(json)
@@ -67,7 +67,7 @@ func test_when_decoding_data_is_lack() {
 }
 ```
 
-## PartialArray/PartialDictionary
+## LossyArray/LossyDictionary/LossySet
 Allows you to decode an array or dictionary with partially incorrect data. If the data is incorrect, the value will be omitted from the result.
 
 ```swift
@@ -79,7 +79,7 @@ private struct User: Decodable, Equatable {
 
     let name: String
 
-    @PartialArray
+    @LossyArray
     var payments: [Payment]
 }
 
