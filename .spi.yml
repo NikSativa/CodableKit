@@ -4,8 +4,5 @@
 
 version: 1
 builder:
-    configs:
-        - documentation_targets:
-            - CodableKit
-            custom_documentation_parameters: [--experimental-skip-synthesized-symbols]
-            platform: ios
+  configs:
+    - documentation_targets: [CodableKit]

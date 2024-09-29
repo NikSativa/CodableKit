@@ -39,3 +39,7 @@ extension LossySet: ExpressibleByArrayLiteral {
         self.init(wrappedValue: .init(elements))
     }
 }
+
+#if swift(>=6.0)
+extension LossySet: Sendable where A: Sendable {}
+#endif

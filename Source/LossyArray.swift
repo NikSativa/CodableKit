@@ -41,3 +41,7 @@ extension LossyArray: ExpressibleByArrayLiteral {
         self.init(wrappedValue: elements)
     }
 }
+
+#if swift(>=6.0)
+extension LossyArray: Sendable where A: Sendable {}
+#endif

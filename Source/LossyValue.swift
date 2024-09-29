@@ -40,3 +40,7 @@ extension LossyValue: ExpressibleByNilLiteral {
         self.init(wrappedValue: nil)
     }
 }
+
+#if swift(>=6.0)
+extension LossyValue: Sendable where A: Sendable {}
+#endif

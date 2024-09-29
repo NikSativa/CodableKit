@@ -39,3 +39,7 @@ extension Nullable: Equatable where T: Equatable {}
 // MARK: - Hashable
 
 extension Nullable: Hashable where T: Hashable {}
+
+#if swift(>=6.0)
+extension Nullable: Sendable where T: Sendable {}
+#endif

@@ -41,3 +41,7 @@ extension LossyDictionary: ExpressibleByDictionaryLiteral {
         self.init(wrappedValue: .init(uniqueKeysWithValues: elements))
     }
 }
+
+#if swift(>=6.0)
+extension LossyDictionary: Sendable where Key: Sendable, Value: Sendable {}
+#endif
