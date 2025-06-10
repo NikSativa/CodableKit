@@ -1,11 +1,19 @@
 # CodableKit
+
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FNikSativa%2FCodableKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/NikSativa/CodableKit)
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2FNikSativa%2FCodableKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/NikSativa/CodableKit)
+[![NikSativa CI](https://github.com/NikSativa/CodableKit/actions/workflows/swift_macos.yml/badge.svg)](https://github.com/NikSativa/CodableKit/actions/workflows/swift_macos.yml)
+[![License](https://img.shields.io/github/license/Iterable/swift-sdk)](https://opensource.org/licenses/MIT)
 
-Swift library that provides additional features for Codable. CodableKit is useful when you need to decode data from the server, but you are not sure that the data will be correct.
+CodableKit is a Swift library that extends the capabilities of the standard `Codable` protocol.
+
+It provides a suite of property wrappers designed to safely decode or encode values when dealing with uncertain, inconsistent, or partially malformed data—particularly useful when working with external APIs.
 
 ## LossyValue
-Allows you to decode fields with a partially incorrect format or incorrect value. If the field is incorrect, the value will be nil. 
+
+A property wrapper that safely decodes an individual value even when the data is invalid or contains unexpected values.
+
+If decoding fails for this field, the property will be set to `nil` instead of throwing an error or failing the entire decoding process.
 
 ```swift
 enum Payment: String, Codable, Equatable {
@@ -67,8 +75,11 @@ func test_when_decoding_data_is_lack() {
 }
 ```
 
-## LossyArray/LossyDictionary/LossySet
-Allows you to decode an array or dictionary with partially incorrect data. If the data is incorrect, the value will be omitted from the result.
+## LossyArray / LossyDictionary / LossySet
+
+Property wrappers that allow partial decoding of collections.
+
+Invalid or unrecognized elements are silently dropped, while valid elements are preserved. This ensures maximum resilience when dealing with arrays, dictionaries, or sets containing potentially invalid data.
 
 ```swift
 private struct User: Decodable, Equatable {
@@ -94,7 +105,10 @@ XCTAssertEqual(subject, expectedUser)
 ```
 
 ## Nullable
-Allows you to encode 'nil' field as 'null' in JSON when server requires it.
+
+A property wrapper that explicitly encodes a `nil` value as `null` in the resulting JSON output.
+
+Use this when the receiving server requires the presence of a field—even when its value is `nil`. By contrast, standard `Optional` encoding omits the key entirely when the value is `nil`.
 
 ```swift
 private struct User: Encodable, Equatable {
