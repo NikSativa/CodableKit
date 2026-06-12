@@ -52,6 +52,5 @@ extension LossySet: ExpressibleByArrayLiteral {
     }
 }
 
-#if swift(>=6.0)
 extension LossySet: Sendable where A: Sendable {}
-#endif
+

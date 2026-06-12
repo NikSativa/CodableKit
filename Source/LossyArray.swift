@@ -57,6 +57,5 @@ extension LossyArray: ExpressibleByArrayLiteral {
     }
 }
 
-#if swift(>=6.0)
 extension LossyArray: Sendable where A: Sendable {}
-#endif
+

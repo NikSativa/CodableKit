@@ -55,6 +55,5 @@ extension LossyValue: ExpressibleByNilLiteral {
     }
 }
 
-#if swift(>=6.0)
 extension LossyValue: Sendable where A: Sendable {}
-#endif
+

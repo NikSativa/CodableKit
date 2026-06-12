@@ -54,6 +54,5 @@ extension LossyDictionary: ExpressibleByDictionaryLiteral {
     }
 }
 
-#if swift(>=6.0)
 extension LossyDictionary: Sendable where Key: Sendable, Value: Sendable {}
-#endif
+
